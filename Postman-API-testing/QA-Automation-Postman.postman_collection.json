@@ -1,0 +1,773 @@
+{
+	"info": {
+		"_postman_id": "dad03dcf-571f-4f76-9925-b0da9824d52c",
+		"name": "QA-Automation-Postman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET",
+			"item": [
+				{
+					"name": "GitHub Issues",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get all issues returns HTTP code 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"Get all issues returns JSON content-type\", function () {",
+									"    pm.expect(pm.response.headers.get('Content-Type'))",
+									"        .equals('application/json; charset=utf-8');",
+									"})",
+									"",
+									"pm.test(\"Get all issues returns valid elements\", function() {",
+									"    const response = pm.response.json();",
+									"",
+									"    for (let issue of response) {",
+									"        pm.expect(issue.id).not.null;",
+									"        pm.expect(issue).to.have.property('title');",
+									"    }",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GitHub Issue by number",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get specific issue returns HTTP code 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"Get specific issue returns JSON content-type\", function () {",
+									"    pm.expect(pm.response.headers.get('Content-Type'))",
+									"        .equals('application/json; charset=utf-8');",
+									"})",
+									"",
+									"pm.test(\"Get specific issue returns json with id and number properties\", function() {",
+									"    const response = pm.response.json();",
+									"",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('number');",
+									"    pm.expect(typeof response.id).equals('number');",
+									"    pm.expect(typeof response.number).equals('number');",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues/2",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GitHub Invalid Issue by number",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get invalid issue number returns 404\", function() {",
+									"    pm.expect(pm.response.code).equals(404)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues/0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GitHub Issue labels",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues/2/labels",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues",
+								"2",
+								"labels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GitHub Comments by issue",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues/2/comments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues",
+								"2",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GitHub Comment by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues/comments/1135702492",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues",
+								"comments",
+								"1135702492"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST",
+			"item": [
+				{
+					"name": "GitHub Create Issue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create a new issue returns HTTP code 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"})",
+									"",
+									"pm.test(\"Create a new issue returns JSON content-type\", function () {",
+									"    pm.expect(pm.response.headers.get('Content-Type'))",
+									"        .equals('application/json; charset=utf-8');",
+									"})",
+									"",
+									"pm.test(\"Create a new issue returns json with id and number properties\", function() {",
+									"    const response = pm.response.json();",
+									"",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('number');",
+									"    pm.expect(typeof response.id).equals('number');",
+									"    pm.expect(typeof response.number).equals('number');",
+									"})",
+									"",
+									"pm.test(\"Created issue has the same title as the response\", function() {",
+									"    const requestIssue = JSON.parse(pm.request.body);",
+									"    const responseIssue = pm.response.json();",
+									"",
+									"    pm.expect(typeof responseIssue).equals('object');",
+									"    pm.expect(requestIssue.title).equals(responseIssue.title);",
+									"    pm.expect(requestIssue.body).equals(responseIssue.body);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{user}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\" : \"Testing issue creation API\",\n    \"body\" : \"Creating an issue with Postman in order to test the GitHub API.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GitHub Create issue comment",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{user}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"body\" : \"Creating comments from Postman.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues/2/comments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues",
+								"2",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GitHub Create issue with invalid data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Missing required title returns HTTP 422\", function() {",
+									"    pm.expect(pm.response.code).equals(422);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{user}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"body\" : \"Require tittle field missing.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GitHub Create issue without Authorization",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Missing authorization returns HTTP 404\", function() {",
+									"    pm.response.to.have.status(404);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\" : \"Testing issue creation API\",\n    \"body\" : \"Creating an issue with Postman in order to test the GitHub API.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PATCH",
+			"item": [
+				{
+					"name": "GitHub Edit existing issue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Editting an existing issue returns HTTP code 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"Editting an existing issue returns JSON content-type\", function () {",
+									"    pm.expect(pm.response.headers.get('Content-Type'))",
+									"        .equals('application/json; charset=utf-8');",
+									"})",
+									"",
+									"pm.test(\"Editting an existing issue retuns json with id and number properties\", function() {",
+									"    const response = pm.response.json();",
+									"",
+									"    pm.expect(response).to.have.property('id');",
+									"    pm.expect(response).to.have.property('number');",
+									"    pm.expect(typeof response.id).equals('number');",
+									"    pm.expect(typeof response.number).equals('number');",
+									"})",
+									"",
+									"pm.test(\"Editted issue has the same title as the response\", function() {",
+									"    const requestIssue = JSON.parse(pm.request.body);",
+									"    const responseIssue = pm.response.json();",
+									"",
+									"    pm.expect(typeof responseIssue).equals('object');",
+									"    pm.expect(requestIssue.title).equals(responseIssue.title);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{user}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\" : \"Testing issue creation API (editted!)\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues/4",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GitHub Close existing issue",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{user}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"state\" : \"closed\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues/3",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GitHub Edit existing comment",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{user}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"body\" : \"Creating comments from Postman. (editted)\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues/comments/1135702492",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues",
+								"comments",
+								"1135702492"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GitHub Edit non-existing issue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Edit invalid issue title returns 404\", function() {",
+									"    pm.expect(pm.response.code).equals(404)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues/0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GitHub Edit  issue without Authorization",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Missing authorization returns HTTP 401\", function() {",
+									"    pm.response.to.have.status(401);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues/4",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DELETE",
+			"item": [
+				{
+					"name": "GitHub Delete comment",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{user}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://api.github.com/repos/{{user}}/{{main_repo}}/issues/comments/1135716754",
+							"protocol": "https",
+							"host": [
+								"api",
+								"github",
+								"com"
+							],
+							"path": [
+								"repos",
+								"{{user}}",
+								"{{main_repo}}",
+								"issues",
+								"comments",
+								"1135716754"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
